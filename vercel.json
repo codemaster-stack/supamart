@@ -1,6 +1,8 @@
 {
   "version": 2,
   "routes": [
-    { "src": "/", "dest": "/pages/index.html" }
+    { "src": "/", "dest": "/index.html" },
+    { "src": "/login", "dest": "/login.html" },
+    { "src": "/register", "dest": "/register.html" }
   ]
 }
