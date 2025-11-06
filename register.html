@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Supamart - Sign Up</title>
+  <link rel="stylesheet" href="../css/main.css">      <!-- global styles -->
+  <link rel="stylesheet" href="../css/register.css">  <!-- page-specific -->
+  <!-- intl-tel-input CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/css/intlTelInput.min.css"/>
+</head>
+<body>
+  <header>
+    <a href="index.html"><img src="assets/logo.png" alt="Supamart Logo" class="logo"></a>
+  </header>
+
+  <main>
+    <div class="signup-container">
+      <h2>Create Your Account</h2>
+      <form id="signup-form">
+        <label for="fullname">Full Name</label>
+        <input type="text" id="fullname" name="fullname" required>
+
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="phone">Phone Number</label>
+        <input id="phone" type="tel" required>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+
+        <label for="confirm-password">Confirm Password</label>
+        <input type="password" id="confirm-password" name="confirm-password" required>
+
+        <button type="submit">Sign Up</button>
+      </form>
+      <p>Already have an account? <a href="login.html">Login</a></p>
+    </div>
+  </main>
+
+  <!-- intl-tel-input JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/intlTelInput.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js"></script>
+
+  <!-- page-specific JS -->
+  <script src="../js/register.js"></script>
+
+  <!-- global JS -->
+  <script src="../js/main.js"></script>
+</body>
+</html>
