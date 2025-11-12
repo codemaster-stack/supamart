@@ -55,21 +55,19 @@ class LoadingIndicator {
                 border-radius: 12px;
                 box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
             }
-
-            .spinner {
-                width: 50px;
-                height: 50px;
-                margin: 0 auto 20px;
-                border: 4px solid #f3f3f3;
-                border-top: 4px solid #007bff;
-                border-radius: 50%;
-                animation: spin 1s linear infinite;
+           
+            .spinner-logo {
+             width: 60px;           /* adjust to your logo size */
+             height: auto;          /* keeps aspect ratio */
+             margin: 0 auto 15px;
+             display: block;
+             animation: pulse 1s ease-in-out infinite;
             }
 
-            @keyframes spin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
-            }
+            @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+             }
 
             .loading-text {
                 margin: 0;
