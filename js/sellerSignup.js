@@ -280,7 +280,7 @@ async function handleSellerSignup(sellerData) {
             
             // Redirect to seller dashboard
             setTimeout(() => {
-                window.location.href = '/merchant';
+                window.location.href = '/login';
             }, 2500);
             
         } else {
