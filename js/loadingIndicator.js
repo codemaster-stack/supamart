@@ -12,9 +12,9 @@ class LoadingIndicator {
         this.overlay.className = 'loading-overlay';
         this.overlay.innerHTML = `
             <div class="loading-spinner">
-                <div class="spinner"></div>
-                <p class="loading-text">Loading...</p>
-            </div>
+             <img src="../assets/images/logo.png" class="spinner-logo" alt="Supamart Logo">
+             <p class="loading-text">Loading...</p>
+           </div>
         `;
         
         // Add styles
