@@ -7,7 +7,7 @@
     { "source": "/userpage", "destination": "/user-dashboard" },
     { "source": "/merchant", "destination": "/seller-dashboard" },
     { "source": "/seller-signup", "destination": "/seller-signup.html" },
-    { "source": "/admin", "destination": "/admin-signup.html" },
+    { "source": "/admin", "destination": "/admin-signup.html" }
   ],
   "cleanUrls": true,
   "trailingSlash": false
