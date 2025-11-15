@@ -408,3 +408,32 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+
+/* Badge Styles */
+.badge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.badge-primary { background: #007bff; color: white; }
+.badge-success { background: #28a745; color: white; }
+.badge-danger { background: #dc3545; color: white; }
+.badge-warning { background: #ffc107; color: #333; }
+.badge-info { background: #17a2b8; color: white; }
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 0 3px;
+}
+
+.btn-sm.btn-success { background: #28a745; color: white; }
+.btn-sm.btn-danger { background: #dc3545; color: white; }
+.btn-sm.btn-primary { background: #007bff; color: white; }
