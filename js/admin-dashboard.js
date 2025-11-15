@@ -9,6 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initSidebar();
     initNavigation();
     loadDashboardData();
+    initWidgetLinks();
+
 });
 
 // Check Authentication
@@ -527,4 +529,47 @@ function handleLogout() {
         sessionStorage.clear();
         window.location.href = '/login.html';
     }
+}
+
+
+
+// WIDGET LINKS NAVIGATION
+function initWidgetLinks() {
+    const widgetLinks = document.querySelectorAll('.widget-link');
+    const navItems = document.querySelectorAll('.sidebar-nav .nav-item');
+    const sections = document.querySelectorAll('.dashboard-section');
+
+    widgetLinks.forEach(link => {
+        link.addEventListener('click', e => {
+            const href = link.getAttribute('href');
+            if (!href || !href.startsWith('#')) return;
+
+            e.preventDefault();
+            const targetId = href.substring(1);
+            const targetSection = document.getElementById(targetId);
+            if (!targetSection) return;
+
+            // Remove active classes
+            sections.forEach(s => s.classList.remove('active'));
+            navItems.forEach(n => n.classList.remove('active'));
+
+            // Show section
+            targetSection.classList.add('active');
+
+            // Highlight matching sidebar item
+            const matchingSidebar = document.querySelector(`.sidebar-nav a[href="#${targetId}"]`);
+            if (matchingSidebar) matchingSidebar.parentElement.classList.add('active');
+
+            // Update header title
+            const headerTitle = document.querySelector('.admin-header h2');
+            const sectionTitle = targetSection.querySelector('h3');
+            if (headerTitle) headerTitle.textContent = sectionTitle ? sectionTitle.textContent : 'Admin Dashboard';
+
+            // Load section data (reuse existing function)
+            loadSectionData(targetId);
+
+            // Close sidebar on mobile
+            document.querySelector('.admin-sidebar')?.classList.remove('open');
+        });
+    });
 }
