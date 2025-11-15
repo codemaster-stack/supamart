@@ -46,6 +46,47 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+
+    // WIDGET LINKS NAVIGATION (NEW!!)
+// ===============================
+const widgetLinks = document.querySelectorAll('.widget-link');
+const headerTitleElement = document.querySelector('.seller-header h2');
+
+widgetLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+        const href = link.getAttribute('href');
+        if (!href || !href.startsWith('#')) return;
+
+        e.preventDefault();
+        const targetId = href.substring(1);
+        const targetSection = document.getElementById(targetId);
+        if (!targetSection) return;
+
+        // Hide all sections
+        contentSections.forEach(sec => sec.classList.remove('active'));
+
+        // Activate target section
+        targetSection.classList.add('active');
+
+        // Update header title
+        const sectionTitle = targetSection.querySelector('h3');
+        if (headerTitleElement) {
+            headerTitleElement.textContent = sectionTitle ? sectionTitle.textContent : 'Seller Dashboard';
+        }
+
+        // Highlight sidebar item that matches the widget link
+        navItems.forEach(item => item.classList.remove('active'));
+        const matchingSidebar = document.querySelector(`.sidebar-nav a[href="${href}"]`);
+        if (matchingSidebar) {
+            matchingSidebar.parentElement.classList.add('active');
+        }
+
+        // Close sidebar on mobile
+        sidebar?.classList.remove('open');
+        document.body.classList.remove('sidebar-open');
+    });
+});
+
     // Initialize default section
     const activeNavItem = document.querySelector('.sidebar-nav .nav-item.active');
     if (activeNavItem) activeNavItem.click();
