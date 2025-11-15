@@ -362,6 +362,359 @@ function initSalesChart() {
     });
 }
 
+
+// ========== ADD PRODUCT ==========
+function openAddProductModal() {
+    document.getElementById('add-product-modal').classList.add('active');
+}
+
+function closeAddProductModal() {
+    document.getElementById('add-product-modal').classList.remove('active');
+    document.getElementById('add-product-form').reset();
+}
+
+// Make global
+window.openAddProductModal = openAddProductModal;
+window.closeAddProductModal = closeAddProductModal;
+
+// Handle Add Product Form
+document.getElementById('add-product-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    try {
+        if (typeof loadingIndicator !== 'undefined') {
+            loadingIndicator.show('Adding product...');
+        }
+        
+        const formData = new FormData(e.target);
+        
+        const response = await fetch(`${API_URL}/products`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (typeof loadingIndicator !== 'undefined') {
+            loadingIndicator.hide();
+        }
+        
+        if (result.success) {
+            alert('Product added successfully!');
+            closeAddProductModal();
+            loadProducts(); // Reload products list
+        } else {
+            alert('Error: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error adding product:', error);
+        if (typeof loadingIndicator !== 'undefined') {
+            loadingIndicator.hide();
+        }
+        alert('Failed to add product');
+    }
+});
+
+// ========== REQUEST PAYOUT ==========
+function openPayoutModal() {
+    document.getElementById('payout-modal').classList.add('active');
+    loadBankAccounts();
+}
+
+function closePayoutModal() {
+    document.getElementById('payout-modal').classList.remove('active');
+    document.getElementById('payout-form').reset();
+}
+
+window.openPayoutModal = openPayoutModal;
+window.closePayoutModal = closePayoutModal;
+
+// Update available balance when currency changes
+function updatePayoutAmount() {
+    const currency = document.getElementById('payout-currency').value;
+    if (!currency || !currentSeller) return;
+    
+    const balance = currentSeller.wallets?.[currency]?.balance || 0;
+    const symbols = { USD: '$', GBP: '£', EUR: '€', NGN: '₦' };
+    
+    document.getElementById('payout-available-balance').textContent = 
+        `${symbols[currency]}${balance.toLocaleString()}`;
+    
+    document.getElementById('payout-amount').max = balance;
+}
+
+window.updatePayoutAmount = updatePayoutAmount;
+
+// Load Bank Accounts
+async function loadBankAccounts() {
+    try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        
+        const response = await fetch(`${API_URL}/sellers/${user.id}`, {
+            headers: getAuthHeaders()
+        });
+        
+        const result = await response.json();
+        
+        if (result.success && result.seller.bankAccounts) {
+            const select = document.getElementById('payout-account');
+            select.innerHTML = '<option value="">Select Bank Account</option>';
+            
+            result.seller.bankAccounts.forEach(account => {
+                const option = document.createElement('option');
+                option.value = account._id;
+                option.textContent = `${account.bankName} - ${account.accountNumber} (${account.currency})`;
+                select.appendChild(option);
+            });
+        }
+    } catch (error) {
+        console.error('Error loading bank accounts:', error);
+    }
+}
+
+// Handle Payout Request
+document.getElementById('payout-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    try {
+        if (typeof loadingIndicator !== 'undefined') {
+            loadingIndicator.show('Processing payout request...');
+        }
+        
+        const formData = new FormData(e.target);
+        const payoutData = {
+            currency: formData.get('currency'),
+            amount: parseFloat(formData.get('amount')),
+            accountId: formData.get('accountId')
+        };
+        
+        const user = JSON.parse(localStorage.getItem('user'));
+        
+        const response = await fetch(`${API_URL}/sellers/${user.id}/payout`, {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            body: JSON.stringify(payoutData)
+        });
+        
+        const result = await response.json();
+        
+        if (typeof loadingIndicator !== 'undefined') {
+            loadingIndicator.hide();
+        }
+        
+        if (result.success) {
+            alert('Payout request submitted successfully!');
+            closePayoutModal();
+            loadSellerData(); // Reload to update balances
+        } else {
+            alert('Error: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error requesting payout:', error);
+        if (typeof loadingIndicator !== 'undefined') {
+            loadingIndicator.hide();
+        }
+        alert('Failed to request payout');
+    }
+});
+
+// ========== STORE SETTINGS ==========
+
+// Load Store Settings
+function loadStoreSettings() {
+    if (!currentSeller) return;
+    
+    document.getElementById('settings-store-name').value = currentSeller.storeName || '';
+    document.getElementById('settings-store-description').value = currentSeller.storeDescription || '';
+    document.getElementById('settings-phone').value = currentSeller.phoneNumber || '';
+    
+    // Load bank accounts
+    displayBankAccounts(currentSeller.bankAccounts || []);
+}
+
+// Display Bank Accounts
+function displayBankAccounts(accounts) {
+    const list = document.getElementById('bank-accounts-list');
+    
+    if (accounts.length === 0) {
+        list.innerHTML = '<p style="color: #666;">No bank accounts added yet.</p>';
+        return;
+    }
+    
+    list.innerHTML = '';
+    accounts.forEach(account => {
+        const div = document.createElement('div');
+        div.className = 'bank-account-item';
+        div.innerHTML = `
+            <div class="bank-account-info">
+                <h5>${account.bankName} (${account.currency})</h5>
+                <p>${account.accountName} - ${account.accountNumber}</p>
+            </div>
+            <button class="btn-remove" onclick="removeBankAccount('${account._id}')">
+                <i class="fas fa-trash"></i>
+            </button>
+        `;
+        list.appendChild(div);
+    });
+}
+
+// Handle Store Info Update
+document.getElementById('store-info-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    try {
+        if (typeof loadingIndicator !== 'undefined') {
+            loadingIndicator.show('Updating store settings...');
+        }
+        
+        const formData = new FormData(e.target);
+        const updateData = {
+            storeName: formData.get('storeName'),
+            storeDescription: formData.get('storeDescription'),
+            phoneNumber: formData.get('phoneNumber')
+        };
+        
+        const user = JSON.parse(localStorage.getItem('user'));
+        
+        const response = await fetch(`${API_URL}/sellers/${user.id}`, {
+            method: 'PUT',
+            headers: getAuthHeaders(),
+            body: JSON.stringify(updateData)
+        });
+        
+        const result = await response.json();
+        
+        if (typeof loadingIndicator !== 'undefined') {
+            loadingIndicator.hide();
+        }
+        
+        if (result.success) {
+            alert('Store settings updated successfully!');
+            loadSellerData(); // Reload seller data
+        } else {
+            alert('Error: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error updating store settings:', error);
+        if (typeof loadingIndicator !== 'undefined') {
+            loadingIndicator.hide();
+        }
+        alert('Failed to update settings');
+    }
+});
+
+// Show/Hide Bank Account Form
+function showAddBankAccountForm() {
+    document.getElementById('add-bank-account-form').style.display = 'block';
+}
+
+function hideAddBankAccountForm() {
+    document.getElementById('add-bank-account-form').style.display = 'none';
+    document.getElementById('bank-account-form').reset();
+}
+
+window.showAddBankAccountForm = showAddBankAccountForm;
+window.hideAddBankAccountForm = hideAddBankAccountForm;
+
+// Handle Add Bank Account
+document.getElementById('bank-account-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    try {
+        if (typeof loadingIndicator !== 'undefined') {
+            loadingIndicator.show('Adding bank account...');
+        }
+        
+        const formData = new FormData(e.target);
+        const bankData = {
+            currency: formData.get('currency'),
+            bankName: formData.get('bankName'),
+            accountName: formData.get('accountName'),
+            accountNumber: formData.get('accountNumber'),
+            swiftCode: formData.get('swiftCode')
+        };
+        
+        const user = JSON.parse(localStorage.getItem('user'));
+        
+        const response = await fetch(`${API_URL}/sellers/${user.id}/bank-account`, {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            body: JSON.stringify(bankData)
+        });
+        
+        const result = await response.json();
+        
+        if (typeof loadingIndicator !== 'undefined') {
+            loadingIndicator.hide();
+        }
+        
+        if (result.success) {
+            alert('Bank account added successfully!');
+            hideAddBankAccountForm();
+            loadSellerData(); // Reload to show new account
+        } else {
+            alert('Error: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error adding bank account:', error);
+        if (typeof loadingIndicator !== 'undefined') {
+            loadingIndicator.hide();
+        }
+        alert('Failed to add bank account');
+    }
+});
+
+// Remove Bank Account
+async function removeBankAccount(accountId) {
+    if (!confirm('Remove this bank account?')) return;
+    
+    try {
+        if (typeof loadingIndicator !== 'undefined') {
+            loadingIndicator.show('Removing account...');
+        }
+        
+        const user = JSON.parse(localStorage.getItem('user'));
+        
+        const response = await fetch(`${API_URL}/sellers/${user.id}/bank-account/${accountId}`, {
+            method: 'DELETE',
+            headers: getAuthHeaders()
+        });
+        
+        const result = await response.json();
+        
+        if (typeof loadingIndicator !== 'undefined') {
+            loadingIndicator.hide();
+        }
+        
+        if (result.success) {
+            alert('Bank account removed!');
+            loadSellerData();
+        } else {
+            alert('Error: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error removing account:', error);
+        if (typeof loadingIndicator !== 'undefined') {
+            loadingIndicator.hide();
+        }
+    }
+}
+
+window.removeBankAccount = removeBankAccount;
+
+// Update loadSectionData function
+const originalLoadSectionData = loadSectionData;
+loadSectionData = async function(sectionId) {
+    await originalLoadSectionData(sectionId);
+    
+    if (sectionId === 'store-settings') {
+        loadStoreSettings();
+    }
+};
+
 // Logout
 function handleLogout() {
     if (confirm('Are you sure you want to logout?')) {

@@ -207,11 +207,11 @@
             <section id="products" class="dashboard-section">
                 <div class="container">
                     <h3>Your Products</h3>
-                    <div class="section-actions">
-                        <a href="#add-product" class="btn btn-primary">
-                            <i class="fas fa-plus"></i> Add New Product
-                        </a>
-                    </div>
+                   <div class="section-actions">
+                      <button class="btn btn-primary" onclick="openAddProductModal()">
+                        <i class="fas fa-plus"></i> Add New Product
+                      </button>
+                   </div>
                     <div class="table-responsive">
                         <table class="data-table">
                             <thead>
@@ -313,20 +313,103 @@
                     </div>
 
                     <div class="payout-actions">
-                        <button class="btn btn-primary">
-                            <i class="fas fa-paper-plane"></i> Request Payout
-                        </button>
+                     <button class="btn btn-primary" onclick="openPayoutModal()">
+                       <i class="fas fa-paper-plane"></i> Request Payout
+                     </button>
                     </div>
                 </div>
             </section>
 
             <!-- Store Settings Section -->
-            <section id="store-settings" class="dashboard-section">
-                <div class="container">
-                    <h3>Store Settings</h3>
-                    <p>Update your store's information.</p>
+            <!-- Store Settings Section -->
+<section id="store-settings" class="dashboard-section">
+    <div class="container">
+        <h3>Store Settings</h3>
+        <p>Update your store's information.</p>
+        
+        <div class="settings-card">
+            <h4>Store Information</h4>
+            <form id="store-info-form">
+                <div class="form-group">
+                    <label for="settings-store-name">Store Name</label>
+                    <input type="text" id="settings-store-name" name="storeName">
                 </div>
-            </section>
+                
+                <div class="form-group">
+                    <label for="settings-store-description">Store Description</label>
+                    <textarea id="settings-store-description" name="storeDescription" rows="4"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="settings-phone">Phone Number</label>
+                    <input type="tel" id="settings-phone" name="phoneNumber">
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+            </form>
+        </div>
+        
+        <div class="settings-card">
+            <h4>Bank Accounts</h4>
+            <p>Add bank accounts for payouts.</p>
+            
+            <div id="bank-accounts-list">
+                <!-- Bank accounts will be loaded here -->
+            </div>
+            
+            <button class="btn btn-secondary" onclick="showAddBankAccountForm()">
+                <i class="fas fa-plus"></i> Add Bank Account
+            </button>
+            
+            <div id="add-bank-account-form" style="display: none; margin-top: 20px;">
+                <form id="bank-account-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="bank-currency">Currency *</label>
+                            <select id="bank-currency" name="currency" required>
+                                <option value="USD">USD</option>
+                                <option value="GBP">GBP</option>
+                                <option value="EUR">EUR</option>
+                                <option value="NGN">NGN</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="bank-name">Bank Name *</label>
+                            <input type="text" id="bank-name" name="bankName" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="account-name">Account Name *</label>
+                            <input type="text" id="account-name" name="accountName" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="account-number">Account Number *</label>
+                            <input type="text" id="account-number" name="accountNumber" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="swift-code">SWIFT/BIC Code (for international)</label>
+                        <input type="text" id="swift-code" name="swiftCode">
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="hideAddBankAccountForm()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Add Account
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
 
             <!-- Support Section -->
             <section id="support" class="dashboard-section">
@@ -340,6 +423,141 @@
 
         </div>
     </div>
+
+    <!-- Add Product Modal -->
+<div id="add-product-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Add New Product</h3>
+            <span class="close-modal" onclick="closeAddProductModal()">&times;</span>
+        </div>
+        <form id="add-product-form" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="product-name">Product Name *</label>
+                <input type="text" id="product-name" name="name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="product-description">Description *</label>
+                <textarea id="product-description" name="description" rows="4" required></textarea>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="product-category">Category *</label>
+                    <select id="product-category" name="category" required>
+                        <option value="">Select Category</option>
+                        <option value="Electronics">Electronics</option>
+                        <option value="Fashion">Fashion</option>
+                        <option value="Home">Home & Garden</option>
+                        <option value="Beauty">Beauty & Health</option>
+                        <option value="Sports">Sports & Outdoors</option>
+                        <option value="Books">Books</option>
+                        <option value="Food">Food & Beverages</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="product-condition">Condition *</label>
+                    <select id="product-condition" name="condition" required>
+                        <option value="New">New</option>
+                        <option value="Used - Like New">Used - Like New</option>
+                        <option value="Used - Good">Used - Good</option>
+                        <option value="Used - Fair">Used - Fair</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="product-price">Price *</label>
+                    <input type="number" id="product-price" name="price" step="0.01" min="0" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="product-currency">Currency *</label>
+                    <select id="product-currency" name="currency" required>
+                        <option value="USD">USD ($)</option>
+                        <option value="GBP">GBP (£)</option>
+                        <option value="EUR">EUR (€)</option>
+                        <option value="NGN">NGN (₦)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="product-stock">Stock *</label>
+                    <input type="number" id="product-stock" name="stock" min="0" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="product-images">Product Images * (Max 5 images)</label>
+                <input type="file" id="product-images" name="images" accept="image/*" multiple required>
+                <small>JPG, PNG only. Max 2MB per image.</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="product-tags">Tags (comma separated)</label>
+                <input type="text" id="product-tags" name="tags" placeholder="e.g., wireless, bluetooth, portable">
+            </div>
+            
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeAddProductModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Add Product
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Payout Request Modal -->
+<div id="payout-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Request Payout</h3>
+            <span class="close-modal" onclick="closePayoutModal()">&times;</span>
+        </div>
+        <form id="payout-form">
+            <div class="form-group">
+                <label for="payout-currency">Select Currency *</label>
+                <select id="payout-currency" name="currency" required onchange="updatePayoutAmount()">
+                    <option value="">Select Currency</option>
+                    <option value="USD">USD</option>
+                    <option value="GBP">GBP</option>
+                    <option value="EUR">EUR</option>
+                    <option value="NGN">NGN</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Available Balance</label>
+                <p class="balance-display" id="payout-available-balance">$0.00</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="payout-amount">Amount to Withdraw *</label>
+                <input type="number" id="payout-amount" name="amount" step="0.01" min="0" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="payout-account">Bank Account *</label>
+                <select id="payout-account" name="accountId" required>
+                    <option value="">Select Bank Account</option>
+                </select>
+                <small><a href="#store-settings">Add bank account in Store Settings</a></small>
+            </div>
+            
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closePayoutModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-paper-plane"></i> Request Payout
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 
     <script src="js/loadingIndicator.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
