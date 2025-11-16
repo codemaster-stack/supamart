@@ -52,7 +52,20 @@ async function loadShop(shopURL) {
 function displayShopInfo(seller) {
     console.log('Displaying shop info:', seller);
     
-    document.getElementById('shop-logo').src = seller.storeLogo || 'assets/images/placeholder.png';
+    // ✅ Generate fallback logo with store name
+    const defaultLogo = `https://ui-avatars.com/api/?name=${encodeURIComponent(seller.storeName)}&size=200&background=667eea&color=fff&bold=true`;
+    const logoUrl = seller.storeLogo || defaultLogo;
+    
+    // Set logo with error handling
+    const shopLogo = document.getElementById('shop-logo');
+    if (shopLogo) {
+        shopLogo.src = logoUrl;
+        // If Cloudinary URL fails, use fallback
+        shopLogo.onerror = function() {
+            this.src = defaultLogo;
+        };
+    }
+    
     document.getElementById('shop-name').textContent = seller.storeName;
     document.getElementById('shop-description').textContent = seller.storeDescription || 'Welcome to our shop!';
     document.title = `${seller.storeName} - Supamart`;

@@ -157,9 +157,27 @@ function updateSellerUI(seller) {
     document.getElementById('store-name-sidebar').textContent = seller.storeName;
     document.getElementById('seller-name').textContent = seller.fullName;
     
-    if (seller.storeLogo) {
-        document.getElementById('store-logo').src = seller.storeLogo;
-        document.getElementById('seller-avatar').src = seller.storeLogo;
+    // ✅ Always set logo (with fallback)
+    const defaultLogo = `https://ui-avatars.com/api/?name=${encodeURIComponent(seller.storeName)}&size=150&background=667eea&color=fff`;
+    const logoUrl = seller.storeLogo || defaultLogo;
+    
+    // Update all logo instances
+    const storeLogo = document.getElementById('store-logo');
+    const sellerAvatar = document.getElementById('seller-avatar');
+    
+    if (storeLogo) storeLogo.src = logoUrl;
+    if (sellerAvatar) sellerAvatar.src = logoUrl;
+    
+    // Add error handler in case Cloudinary URL fails
+    if (storeLogo) {
+        storeLogo.onerror = function() {
+            this.src = defaultLogo;
+        };
+    }
+    if (sellerAvatar) {
+        sellerAvatar.onerror = function() {
+            this.src = defaultLogo;
+        };
     }
 }
 
