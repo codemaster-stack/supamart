@@ -524,6 +524,7 @@ document.getElementById('payout-form')?.addEventListener('submit', async (e) => 
 // ========== STORE SETTINGS ==========
 
 // Load Store Settings
+// Load Store Settings
 function loadStoreSettings() {
     if (!currentSeller) return;
     
@@ -531,34 +532,124 @@ function loadStoreSettings() {
     document.getElementById('settings-store-description').value = currentSeller.storeDescription || '';
     document.getElementById('settings-phone').value = currentSeller.phoneNumber || '';
     
+    // Load current logo in settings
+    if (currentSeller.storeLogo) {
+        const currentLogoImg = document.getElementById('current-store-logo');
+        if (currentLogoImg) {
+            currentLogoImg.src = currentSeller.storeLogo;
+        }
+    }
+    
     // Load bank accounts
     displayBankAccounts(currentSeller.bankAccounts || []);
+    
+    // Setup logo form listeners
+    const logoUpdateForm = document.getElementById('logo-update-form');
+    if (logoUpdateForm && !logoUpdateForm.dataset.listenerAdded) {
+        logoUpdateForm.addEventListener('submit', handleLogoUpdate);
+        logoUpdateForm.dataset.listenerAdded = 'true';
+    }
+    
+    const logoInput = document.getElementById('new-store-logo');
+    if (logoInput && !logoInput.dataset.listenerAdded) {
+        logoInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const currentLogoImg = document.getElementById('current-store-logo');
+                    if (currentLogoImg) {
+                        currentLogoImg.src = e.target.result;
+                    }
+                };
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+        logoInput.dataset.listenerAdded = 'true';
+    }
 }
 
-// Display Bank Accounts
-function displayBankAccounts(accounts) {
-    const list = document.getElementById('bank-accounts-list');
+
+// Handle Logo Update
+async function handleLogoUpdate(event) {
+    event.preventDefault();
     
-    if (accounts.length === 0) {
-        list.innerHTML = '<p style="color: #666;">No bank accounts added yet.</p>';
+    const form = event.target;
+    const fileInput = document.getElementById('new-store-logo');
+    const submitBtn = form.querySelector('button[type="submit"]');
+    
+    if (!fileInput.files || fileInput.files.length === 0) {
+        alert('Please select a logo file');
         return;
     }
     
-    list.innerHTML = '';
-    accounts.forEach(account => {
-        const div = document.createElement('div');
-        div.className = 'bank-account-item';
-        div.innerHTML = `
-            <div class="bank-account-info">
-                <h5>${account.bankName} (${account.currency})</h5>
-                <p>${account.accountName} - ${account.accountNumber}</p>
-            </div>
-            <button class="btn-remove" onclick="removeBankAccount('${account._id}')">
-                <i class="fas fa-trash"></i>
-            </button>
-        `;
-        list.appendChild(div);
-    });
+    const file = fileInput.files[0];
+    
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+    if (!allowedTypes.includes(file.type)) {
+        alert('Invalid file type. Please upload JPG or PNG');
+        return;
+    }
+    
+    // Validate file size (2MB)
+    if (file.size > 2 * 1024 * 1024) {
+        alert('File is too large. Maximum size is 2MB');
+        return;
+    }
+    
+    try {
+        if (typeof loadingIndicator !== 'undefined') {
+            loadingIndicator.show('Uploading logo...');
+        }
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+        
+        const user = JSON.parse(localStorage.getItem('user'));
+        const token = localStorage.getItem('token');
+        
+        const formData = new FormData();
+        formData.append('storeLogo', file);
+        
+        const response = await fetch(`${API_URL}/sellers/${user.id}/logo`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+            body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok && result.success) {
+            user.storeLogo = result.storeLogo;
+            localStorage.setItem('user', JSON.stringify(user));
+            currentSeller.storeLogo = result.storeLogo;
+            
+            document.getElementById('current-store-logo').src = result.storeLogo;
+            document.getElementById('store-logo').src = result.storeLogo;
+            document.getElementById('seller-avatar').src = result.storeLogo;
+            
+            if (typeof loadingIndicator !== 'undefined') {
+                loadingIndicator.hide();
+            }
+            
+            alert('Logo updated successfully!');
+            form.reset();
+            
+        } else {
+            throw new Error(result.message || 'Failed to update logo');
+        }
+        
+    } catch (error) {
+        console.error('Logo update error:', error);
+        if (typeof loadingIndicator !== 'undefined') {
+            loadingIndicator.hide();
+        }
+        alert('Failed to update logo: ' + error.message);
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-upload"></i> Update Logo';
+    }
 }
 
 // Handle Store Info Update

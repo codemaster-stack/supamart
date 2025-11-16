@@ -1,332 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seller Dashboard - Supamart</title>
-    <link rel="stylesheet" href="css/seller-dashboard.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-</head>
-<body>
+<!-- Replace the Store Settings Section in your seller-dashboard.html with this -->
 
-    <div class="dashboard-wrapper seller-dashboard-wrapper">
-
-        <!-- Sidebar Navigation -->
-        <aside class="dashboard-sidebar seller-sidebar">
-            <div class="sidebar-header">
-                <img src="" alt="Logo" class="sidebar-logo" id="store-logo">
-                <h3 id="store-name-sidebar">Your Store</h3>
-            </div>
-            <nav class="sidebar-nav">
-                <ul>
-                    <li class="nav-item active">
-                        <a href="#seller-overview">
-                            <i class="fas fa-tachometer-alt"></i> Overview
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#seller-orders">
-                            <i class="fas fa-shopping-bag"></i> Orders
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#products">
-                            <i class="fas fa-box"></i> Products
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#sales-reports">
-                            <i class="fas fa-chart-line"></i> Sales Reports
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#payouts">
-                            <i class="fas fa-wallet"></i> Wallet & Payouts
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#store-settings">
-                            <i class="fas fa-store"></i> Store Settings
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#support">
-                            <i class="fas fa-question-circle"></i> Support
-                        </a>
-                    </li>
-                    <li class="nav-item logout">
-                        <a href="#logout">
-                            <i class="fas fa-sign-out-alt"></i> Logout
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </aside>
-
-        <!-- Main Content Area -->
-        <div class="dashboard-content">
-            <!-- Header -->
-            <header class="dashboard-header seller-header">
-                <div class="header-left">
-                    <button class="sidebar-toggle-btn">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                    <h2>Seller Overview</h2>
-                </div>
-                <div class="header-actions">
-                    <div class="header-search">
-                        <input type="text" placeholder="Search your products...">
-                        <i class="fas fa-search"></i>
-                    </div>
-                </div>
-                <div class="header-right">
-                    <div class="notification-icon">
-                        <i class="fas fa-bell"></i>
-                        <span class="badge" id="notification-count">0</span>
-                    </div>
-                    <div class="user-avatar">
-                        <img src="" alt="Seller Avatar" id="seller-avatar">
-                    </div>
-                    <div class="user-name" id="seller-name">Store Owner</div>
-                </div>
-            </header>
-
-            <!-- Overview Section -->
-            <section id="seller-overview" class="dashboard-section active">
-                <div class="container">
-                    <h3>Welcome, <span id="store-name">Store Owner</span>!</h3>
-                    <p>Here's a snapshot of your store's performance.</p>
-
-                    <!-- SHAREABLE STORE LINK SECTION -->
-                    <div class="store-link-card">
-                        <div class="store-link-header">
-                            <i class="fas fa-store"></i>
-                            <h4>Your Store Link</h4>
-                        </div>
-                        <div class="store-link-content">
-                            <div class="link-display">
-                                <input type="text" id="store-link-input" readonly value="Loading...">
-                            </div>
-                            <div class="link-actions">
-                                <button class="btn btn-primary" onclick="copyStoreLink()">
-                                    <i class="fas fa-copy"></i> Copy Link
-                                </button>
-                                <button class="btn btn-secondary" onclick="shareStoreLink()">
-                                    <i class="fas fa-share-alt"></i> Share
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Seller Widgets -->
-                    <div class="widget-grid">
-                        <div class="widget-card">
-                            <i class="fas fa-dollar-sign widget-icon"></i>
-                            <h4>Total Sales</h4>
-                            <p class="widget-value" id="total-sales">$0.00</p>
-                            <a href="#sales-reports" class="widget-link">View Reports <i class="fas fa-arrow-right"></i></a>
-                        </div>
-                        <div class="widget-card">
-                            <i class="fas fa-shipping-fast widget-icon"></i>
-                            <h4>Pending Orders</h4>
-                            <p class="widget-value" id="pending-orders">0</p>
-                            <a href="#seller-orders" class="widget-link">View Orders <i class="fas fa-arrow-right"></i></a>
-                        </div>
-                        <div class="widget-card">
-                            <i class="fas fa-box widget-icon"></i>
-                            <h4>Active Products</h4>
-                            <p class="widget-value" id="active-products">0</p>
-                            <a href="#products" class="widget-link">Manage Products <i class="fas fa-arrow-right"></i></a>
-                        </div>
-                        <div class="widget-card">
-                            <i class="fas fa-wallet widget-icon"></i>
-                            <h4>Available Balance</h4>
-                            <p class="widget-value" id="available-balance">$0.00</p>
-                            <a href="#payouts" class="widget-link">View Wallet <i class="fas fa-arrow-right"></i></a>
-                        </div>
-                    </div>
-
-                    <!-- Recent Orders -->
-                    <div class="recent-activity-section">
-                        <h4>Recent Orders</h4>
-                        <div class="table-responsive">
-                            <table class="recent-orders-table">
-                                <thead>
-                                    <tr>
-                                        <th>Order ID</th>
-                                        <th>Date</th>
-                                        <th>Customer</th>
-                                        <th>Total</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="recent-orders-tbody">
-                                    <tr>
-                                        <td colspan="6" style="text-align: center;">Loading orders...</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="view-all-link">
-                            <a href="#seller-orders" class="btn-outline">View All Orders</a>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Orders Section -->
-            <section id="seller-orders" class="dashboard-section">
-                <div class="container">
-                    <h3>All Orders</h3>
-                    <p>Manage and track all orders for your products.</p>
-                    <div class="table-responsive">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Order ID</th>
-                                    <th>Product</th>
-                                    <th>Customer</th>
-                                    <th>Date</th>
-                                    <th>Total</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="all-orders-tbody">
-                                <tr>
-                                    <td colspan="7" style="text-align: center;">Loading...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Products Section -->
-            <section id="products" class="dashboard-section">
-                <div class="container">
-                    <h3>Your Products</h3>
-                   <div class="section-actions">
-                      <button class="btn btn-primary" onclick="openAddProductModal()">
-                        <i class="fas fa-plus"></i> Add New Product
-                      </button>
-                   </div>
-                    <div class="table-responsive">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Image</th>
-                                    <th>Name</th>
-                                    <th>Price</th>
-                                    <th>Stock</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="products-tbody">
-                                <tr>
-                                    <td colspan="6" style="text-align: center;">Loading products...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Sales Reports Section -->
-            <section id="sales-reports" class="dashboard-section">
-                <div class="container">
-                    <h3>Sales Reports</h3>
-                    <p>Analyze your sales performance over time.</p>
-                    <div class="chart-container">
-                        <div class="chart-wrapper">
-                            <canvas id="salesOverviewChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Payouts/Wallet Section -->
-            <section id="payouts" class="dashboard-section">
-                <div class="container">
-                    <h3>Wallet & Earnings</h3>
-                    <p>View your earnings across different currencies.</p>
-                    
-                    <!-- Multi-Currency Wallets -->
-                    <div class="wallet-grid">
-                        <div class="wallet-card">
-                            <div class="wallet-header">
-                                <i class="fas fa-dollar-sign"></i>
-                                <h4>USD Wallet</h4>
-                            </div>
-                            <div class="wallet-balance">
-                                <p class="balance-label">Available</p>
-                                <p class="balance-value" id="wallet-usd">$0.00</p>
-                            </div>
-                            <div class="wallet-pending">
-                                <p>Pending: <span id="wallet-usd-pending">$0.00</span></p>
-                            </div>
-                        </div>
-
-                        <div class="wallet-card">
-                            <div class="wallet-header">
-                                <i class="fas fa-pound-sign"></i>
-                                <h4>GBP Wallet</h4>
-                            </div>
-                            <div class="wallet-balance">
-                                <p class="balance-label">Available</p>
-                                <p class="balance-value" id="wallet-gbp">£0.00</p>
-                            </div>
-                            <div class="wallet-pending">
-                                <p>Pending: <span id="wallet-gbp-pending">£0.00</span></p>
-                            </div>
-                        </div>
-
-                        <div class="wallet-card">
-                            <div class="wallet-header">
-                                <i class="fas fa-euro-sign"></i>
-                                <h4>EUR Wallet</h4>
-                            </div>
-                            <div class="wallet-balance">
-                                <p class="balance-label">Available</p>
-                                <p class="balance-value" id="wallet-eur">€0.00</p>
-                            </div>
-                            <div class="wallet-pending">
-                                <p>Pending: <span id="wallet-eur-pending">€0.00</span></p>
-                            </div>
-                        </div>
-
-                        <div class="wallet-card">
-                            <div class="wallet-header">
-                                <i class="fas fa-money-bill"></i>
-                                <h4>NGN Wallet</h4>
-                            </div>
-                            <div class="wallet-balance">
-                                <p class="balance-label">Available</p>
-                                <p class="balance-value" id="wallet-ngn">₦0.00</p>
-                            </div>
-                            <div class="wallet-pending">
-                                <p>Pending: <span id="wallet-ngn-pending">₦0.00</span></p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="payout-actions">
-                     <button class="btn btn-primary" onclick="openPayoutModal()">
-                       <i class="fas fa-paper-plane"></i> Request Payout
-                     </button>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Store Settings Section -->
-            <!-- Store Settings Section -->
 <section id="store-settings" class="dashboard-section">
     <div class="container">
         <h3>Store Settings</h3>
-        <p>Update your store's information.</p>
+        <p>Update your store's information and branding.</p>
         
+        <!-- Store Logo Section -->
+        <div class="settings-card">
+            <h4>Store Logo</h4>
+            <div class="logo-upload-section">
+                <div class="current-logo">
+                    <img id="current-store-logo" src="assets/images/placeholder.png" alt="Current Logo">
+                </div>
+                <div class="logo-upload-form">
+                    <form id="logo-update-form">
+                        <div class="form-group">
+                            <label for="new-store-logo">Upload New Logo</label>
+                            <input type="file" id="new-store-logo" name="storeLogo" accept="image/jpeg,image/jpg,image/png">
+                            <small>JPG or PNG. Max 2MB. Recommended: 500x500px</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-upload"></i> Update Logo
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Store Information -->
         <div class="settings-card">
             <h4>Store Information</h4>
             <form id="store-info-form">
@@ -351,6 +52,7 @@
             </form>
         </div>
         
+        <!-- Bank Accounts Section -->
         <div class="settings-card">
             <h4>Bank Accounts</h4>
             <p>Add bank accounts for payouts.</p>
@@ -411,156 +113,27 @@
     </div>
 </section>
 
-            <!-- Support Section -->
-            <section id="support" class="dashboard-section">
-                <div class="container">
-                    <h3>Support</h3>
-                    <p>Need help? Contact our support team.</p>
-                </div>
-            </section>
+<style>
+/* Add these styles to your seller-dashboard.css */
+.logo-upload-section {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
 
-            <section id="logout" class="dashboard-section"></section>
+.current-logo {
+    flex-shrink: 0;
+}
 
-        </div>
-    </div>
+.logo-upload-form {
+    flex: 1;
+    min-width: 300px;
+}
 
-    <!-- Add Product Modal -->
-<div id="add-product-modal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3>Add New Product</h3>
-            <span class="close-modal" onclick="closeAddProductModal()">&times;</span>
-        </div>
-        <form id="add-product-form" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="product-name">Product Name *</label>
-                <input type="text" id="product-name" name="name" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="product-description">Description *</label>
-                <textarea id="product-description" name="description" rows="4" required></textarea>
-            </div>
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="product-category">Category *</label>
-                    <select id="product-category" name="category" required>
-                        <option value="">Select Category</option>
-                        <option value="Electronics">Electronics</option>
-                        <option value="Fashion">Fashion</option>
-                        <option value="Home">Home & Garden</option>
-                        <option value="Beauty">Beauty & Health</option>
-                        <option value="Sports">Sports & Outdoors</option>
-                        <option value="Books">Books</option>
-                        <option value="Food">Food & Beverages</option>
-                        <option value="Other">Other</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="product-condition">Condition *</label>
-                    <select id="product-condition" name="condition" required>
-                        <option value="New">New</option>
-                        <option value="Used - Like New">Used - Like New</option>
-                        <option value="Used - Good">Used - Good</option>
-                        <option value="Used - Fair">Used - Fair</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="product-price">Price *</label>
-                    <input type="number" id="product-price" name="price" step="0.01" min="0" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="product-currency">Currency *</label>
-                    <select id="product-currency" name="currency" required>
-                        <option value="USD">USD ($)</option>
-                        <option value="GBP">GBP (£)</option>
-                        <option value="EUR">EUR (€)</option>
-                        <option value="NGN">NGN (₦)</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="product-stock">Stock *</label>
-                    <input type="number" id="product-stock" name="stock" min="0" required>
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label for="product-images">Product Images * (Max 5 images)</label>
-                <input type="file" id="product-images" name="images" accept="image/*" multiple required>
-                <small>JPG, PNG only. Max 2MB per image.</small>
-            </div>
-            
-            <div class="form-group">
-                <label for="product-tags">Tags (comma separated)</label>
-                <input type="text" id="product-tags" name="tags" placeholder="e.g., wireless, bluetooth, portable">
-            </div>
-            
-            <div class="modal-actions">
-                <button type="button" class="btn btn-secondary" onclick="closeAddProductModal()">Cancel</button>
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-plus"></i> Add Product
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- Payout Request Modal -->
-<div id="payout-modal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3>Request Payout</h3>
-            <span class="close-modal" onclick="closePayoutModal()">&times;</span>
-        </div>
-        <form id="payout-form">
-            <div class="form-group">
-                <label for="payout-currency">Select Currency *</label>
-                <select id="payout-currency" name="currency" required onchange="updatePayoutAmount()">
-                    <option value="">Select Currency</option>
-                    <option value="USD">USD</option>
-                    <option value="GBP">GBP</option>
-                    <option value="EUR">EUR</option>
-                    <option value="NGN">NGN</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label>Available Balance</label>
-                <p class="balance-display" id="payout-available-balance">$0.00</p>
-            </div>
-            
-            <div class="form-group">
-                <label for="payout-amount">Amount to Withdraw *</label>
-                <input type="number" id="payout-amount" name="amount" step="0.01" min="0" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="payout-account">Bank Account *</label>
-                <select id="payout-account" name="accountId" required>
-                    <option value="">Select Bank Account</option>
-                </select>
-                <small><a href="#store-settings">Add bank account in Store Settings</a></small>
-            </div>
-            
-            <div class="modal-actions">
-                <button type="button" class="btn btn-secondary" onclick="closePayoutModal()">Cancel</button>
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-paper-plane"></i> Request Payout
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-
-    <script src="js/loadingIndicator.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script src="js/seller-dashboard.js"></script>
-</body>
-</html>
+@media (max-width: 768px) {
+    .logo-upload-section {
+        flex-direction: column;
+    }
+}
+</style>
