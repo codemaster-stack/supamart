@@ -552,12 +552,14 @@ function loadStoreSettings() {
     document.getElementById('settings-store-description').value = currentSeller.storeDescription || '';
     document.getElementById('settings-phone').value = currentSeller.phoneNumber || '';
     
-    // Load current logo in settings
-    if (currentSeller.storeLogo) {
-        const currentLogoImg = document.getElementById('current-store-logo');
-        if (currentLogoImg) {
-            currentLogoImg.src = currentSeller.storeLogo;
-        }
+    // ✅ Load current logo with fallback
+    const defaultLogo = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentSeller.storeName)}&size=150&background=667eea&color=fff`;
+    const currentLogoImg = document.getElementById('current-store-logo');
+    if (currentLogoImg) {
+        currentLogoImg.src = currentSeller.storeLogo || defaultLogo;
+        currentLogoImg.onerror = function() {
+            this.src = defaultLogo;
+        };
     }
     
     // Load bank accounts
