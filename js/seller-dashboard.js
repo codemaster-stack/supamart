@@ -152,6 +152,7 @@ async function loadSellerData() {
 }
 
 // Update Seller UI
+// Update Seller UI
 function updateSellerUI(seller) {
     document.getElementById('store-name').textContent = seller.storeName;
     document.getElementById('store-name-sidebar').textContent = seller.storeName;
@@ -159,26 +160,28 @@ function updateSellerUI(seller) {
     
     // ✅ Always set logo (with fallback)
     const defaultLogo = `https://ui-avatars.com/api/?name=${encodeURIComponent(seller.storeName)}&size=150&background=667eea&color=fff`;
-    const logoUrl = seller.storeLogo || defaultLogo;
+    
+    // ✅ ADD CACHE BUSTER
+    const cacheBuster = '?t=' + new Date().getTime();
+    const logoUrl = seller.storeLogo ? (seller.storeLogo + cacheBuster) : defaultLogo;
     
     // Update all logo instances
     const storeLogo = document.getElementById('store-logo');
     const sellerAvatar = document.getElementById('seller-avatar');
+    const currentStoreLogo = document.getElementById('current-store-logo');
     
     if (storeLogo) storeLogo.src = logoUrl;
     if (sellerAvatar) sellerAvatar.src = logoUrl;
+    if (currentStoreLogo) currentStoreLogo.src = logoUrl;
     
     // Add error handler in case Cloudinary URL fails
-    if (storeLogo) {
-        storeLogo.onerror = function() {
-            this.src = defaultLogo;
-        };
-    }
-    if (sellerAvatar) {
-        sellerAvatar.onerror = function() {
-            this.src = defaultLogo;
-        };
-    }
+    [storeLogo, sellerAvatar, currentStoreLogo].forEach(img => {
+        if (img) {
+            img.onerror = function() {
+                this.src = defaultLogo;
+            };
+        }
+    });
 }
 
 // Setup Store Link
@@ -592,6 +595,7 @@ function loadStoreSettings() {
 
 
 // Handle Logo Update
+// Handle Logo Update
 async function handleLogoUpdate(event) {
     event.preventDefault();
     
@@ -636,6 +640,7 @@ async function handleLogoUpdate(event) {
             method: 'PUT',
             headers: {
                 'Authorization': `Bearer ${token}`
+                // ✅ DO NOT set Content-Type - browser handles it for FormData
             },
             body: formData
         });
@@ -643,19 +648,29 @@ async function handleLogoUpdate(event) {
         const result = await response.json();
         
         if (response.ok && result.success) {
+            // ✅ UPDATE LOCALSTORAGE
             user.storeLogo = result.storeLogo;
             localStorage.setItem('user', JSON.stringify(user));
             currentSeller.storeLogo = result.storeLogo;
             
-            document.getElementById('current-store-logo').src = result.storeLogo;
-            document.getElementById('store-logo').src = result.storeLogo;
-            document.getElementById('seller-avatar').src = result.storeLogo;
+            // ✅ ADD CACHE BUSTING - This is the KEY fix!
+            const cacheBuster = '?t=' + new Date().getTime();
+            const newLogoUrl = result.storeLogo + cacheBuster;
+            
+            // ✅ UPDATE ALL LOGO INSTANCES
+            const currentLogo = document.getElementById('current-store-logo');
+            const sidebarLogo = document.getElementById('store-logo');
+            const avatarLogo = document.getElementById('seller-avatar');
+            
+            if (currentLogo) currentLogo.src = newLogoUrl;
+            if (sidebarLogo) sidebarLogo.src = newLogoUrl;
+            if (avatarLogo) avatarLogo.src = newLogoUrl;
             
             if (typeof loadingIndicator !== 'undefined') {
                 loadingIndicator.hide();
             }
             
-            alert('Logo updated successfully!');
+            alert('✅ Logo updated successfully!');
             form.reset();
             
         } else {
@@ -667,7 +682,7 @@ async function handleLogoUpdate(event) {
         if (typeof loadingIndicator !== 'undefined') {
             loadingIndicator.hide();
         }
-        alert('Failed to update logo: ' + error.message);
+        alert('❌ Failed to update logo: ' + error.message);
     } finally {
         submitBtn.disabled = false;
         submitBtn.innerHTML = '<i class="fas fa-upload"></i> Update Logo';
