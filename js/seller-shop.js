@@ -89,14 +89,14 @@ function displayProducts(products) {
     }
     
     products.forEach(product => {
-        const imageUrl = (product.images && product.images[0]) ? product.images[0].url : 'assets/images/placeholder.png';
+       const imageUrl = (product.images && product.images[0]) ? product.images[0].url : 'https://ui-avatars.com/api/?name=Product&size=250&background=ddd&color=666';
         
         const card = document.createElement('div');
         card.className = 'product-card';
         card.innerHTML = `
             <img src="${imageUrl}" 
                  alt="${product.name}" 
-                 onerror="this.src='assets/images/placeholder.png'">
+                onerror="this.src='https://ui-avatars.com/api/?name=Product&size=250&background=ddd&color=666'"
             <h3>${product.name}</h3>
             <p class="price" 
                data-price="${product.price.amount}" 
