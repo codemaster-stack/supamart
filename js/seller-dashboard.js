@@ -595,7 +595,6 @@ function loadStoreSettings() {
 
 
 // Handle Logo Update
-// Handle Logo Update
 async function handleLogoUpdate(event) {
     event.preventDefault();
     
@@ -640,7 +639,6 @@ async function handleLogoUpdate(event) {
             method: 'PUT',
             headers: {
                 'Authorization': `Bearer ${token}`
-                // ✅ DO NOT set Content-Type - browser handles it for FormData
             },
             body: formData
         });
@@ -653,18 +651,8 @@ async function handleLogoUpdate(event) {
             localStorage.setItem('user', JSON.stringify(user));
             currentSeller.storeLogo = result.storeLogo;
             
-            // ✅ ADD CACHE BUSTING - This is the KEY fix!
-            const cacheBuster = '?t=' + new Date().getTime();
-            const newLogoUrl = result.storeLogo + cacheBuster;
-            
-            // ✅ UPDATE ALL LOGO INSTANCES
-            const currentLogo = document.getElementById('current-store-logo');
-            const sidebarLogo = document.getElementById('store-logo');
-            const avatarLogo = document.getElementById('seller-avatar');
-            
-            if (currentLogo) currentLogo.src = newLogoUrl;
-            if (sidebarLogo) sidebarLogo.src = newLogoUrl;
-            if (avatarLogo) avatarLogo.src = newLogoUrl;
+            // ✅ CALL updateSellerUI to refresh all logo instances with cache busting
+            updateSellerUI(currentSeller);
             
             if (typeof loadingIndicator !== 'undefined') {
                 loadingIndicator.hide();
