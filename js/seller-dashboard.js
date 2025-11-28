@@ -151,7 +151,7 @@ async function loadSellerData() {
     }
 }
 
-// Update Seller UI
+
 // Update Seller UI
 function updateSellerUI(seller) {
     document.getElementById('store-name').textContent = seller.storeName;
@@ -547,7 +547,6 @@ document.getElementById('payout-form')?.addEventListener('submit', async (e) => 
 // ========== STORE SETTINGS ==========
 
 // Load Store Settings
-// Load Store Settings
 function loadStoreSettings() {
     if (!currentSeller) return;
     
@@ -623,7 +622,7 @@ function displayBankAccounts(accounts) {
 }
 
 
-// Handle Logo Update
+
 // Handle Logo Update (with enhanced debugging)
 async function handleLogoUpdate(event) {
     event.preventDefault();
