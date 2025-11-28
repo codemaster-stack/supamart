@@ -564,6 +564,35 @@ function loadStoreSettings() {
             this.src = defaultLogo;
         };
     }
+
+    // Add this function after the loadStoreSettings() function
+
+// Display Bank Accounts
+function displayBankAccounts(accounts) {
+    const container = document.getElementById('bank-accounts-list');
+    
+    if (!accounts || accounts.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <p>No bank accounts added yet.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = accounts.map(account => `
+        <div class="bank-account-item">
+            <div class="bank-info">
+                <strong>${account.bankName}</strong>
+                <p>${account.accountName} - ${account.accountNumber}</p>
+                <span class="currency-badge">${account.currency}</span>
+            </div>
+            <button class="btn btn-danger btn-sm" onclick="removeBankAccount('${account._id}')">
+                <i class="fas fa-trash"></i> Remove
+            </button>
+        </div>
+    `).join('');
+}
     
     // Load bank accounts
     displayBankAccounts(currentSeller.bankAccounts || []);
@@ -595,6 +624,7 @@ function loadStoreSettings() {
 
 
 // Handle Logo Update
+// Handle Logo Update (with enhanced debugging)
 async function handleLogoUpdate(event) {
     event.preventDefault();
     
@@ -602,12 +632,22 @@ async function handleLogoUpdate(event) {
     const fileInput = document.getElementById('new-store-logo');
     const submitBtn = form.querySelector('button[type="submit"]');
     
+    console.log('=== LOGO UPDATE DEBUG ===');
+    console.log('Form submitted');
+    console.log('File input:', fileInput);
+    console.log('Files:', fileInput.files);
+    
     if (!fileInput.files || fileInput.files.length === 0) {
         alert('Please select a logo file');
         return;
     }
     
     const file = fileInput.files[0];
+    console.log('Selected file:', {
+        name: file.name,
+        type: file.type,
+        size: file.size
+    });
     
     // Validate file type
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
@@ -632,8 +672,13 @@ async function handleLogoUpdate(event) {
         const user = JSON.parse(localStorage.getItem('user'));
         const token = localStorage.getItem('token');
         
+        console.log('User ID:', user.id);
+        console.log('Token exists:', !!token);
+        
         const formData = new FormData();
         formData.append('storeLogo', file);
+        
+        console.log('Making request to:', `${API_URL}/sellers/${user.id}/logo`);
         
         const response = await fetch(`${API_URL}/sellers/${user.id}/logo`, {
             method: 'PUT',
@@ -643,13 +688,22 @@ async function handleLogoUpdate(event) {
             body: formData
         });
         
+        console.log('Response status:', response.status);
+        console.log('Response ok:', response.ok);
+        
         const result = await response.json();
+        console.log('Response data:', result);
         
         if (response.ok && result.success) {
+            console.log('✅ Logo uploaded successfully!');
+            console.log('New logo URL:', result.storeLogo);
+            
             // ✅ UPDATE LOCALSTORAGE
             user.storeLogo = result.storeLogo;
             localStorage.setItem('user', JSON.stringify(user));
             currentSeller.storeLogo = result.storeLogo;
+            
+            console.log('Updated currentSeller:', currentSeller);
             
             // ✅ CALL updateSellerUI to refresh all logo instances with cache busting
             updateSellerUI(currentSeller);
@@ -666,7 +720,7 @@ async function handleLogoUpdate(event) {
         }
         
     } catch (error) {
-        console.error('Logo update error:', error);
+        console.error('❌ Logo update error:', error);
         if (typeof loadingIndicator !== 'undefined') {
             loadingIndicator.hide();
         }
