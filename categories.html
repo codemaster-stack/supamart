@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Categories - Supamart</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #0a0a0a;
+      --white: #f8f6f1;
+      --accent: #e8491d;
+      --gray: #2a2a2a;
+      --light-gray: #ebebeb;
+      --mid-gray: #888;
+      --border: #e0ddd6;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--white);
+      color: var(--black);
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    header {
+      background: var(--black);
+      padding: 0 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      border-bottom: 2px solid var(--accent);
+    }
+
+    .logo a {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.5rem;
+      color: var(--white);
+      text-decoration: none;
+    }
+
+    .logo a span { color: var(--accent); }
+
+    .header-nav a {
+      color: var(--white);
+      text-decoration: none;
+      font-size: 0.85rem;
+      margin-left: 1.5rem;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+
+    .header-nav a:hover, .header-nav a.active { opacity: 1; }
+
+    /* PAGE HEADER */
+    .page-header {
+      background: var(--black);
+      color: var(--white);
+      padding: 4rem 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 60% 40%, rgba(232,73,29,0.15) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .page-header h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      position: relative;
+    }
+
+    .page-header p {
+      color: var(--mid-gray);
+      font-size: 1rem;
+      position: relative;
+    }
+
+    /* CATEGORIES GRID */
+    .categories-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .category-card {
+      background: var(--black);
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+      position: relative;
+      aspect-ratio: 4/3;
+      text-decoration: none;
+      display: block;
+    }
+
+    .category-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+
+    .category-card:hover .card-overlay {
+      opacity: 0.5;
+    }
+
+    .category-card:hover .card-icon {
+      transform: scale(1.1);
+    }
+
+    .card-bg {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+      opacity: 0.15;
+      transition: transform 0.3s;
+    }
+
+    .card-overlay {
+      position: absolute;
+      inset: 0;
+      opacity: 0.4;
+      transition: opacity 0.3s;
+    }
+
+    .card-content {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .card-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.8rem;
+      transition: transform 0.3s;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+    }
+
+    .card-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 0.3rem;
+    }
+
+    .card-count {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.6);
+      background: rgba(255,255,255,0.1);
+      padding: 2px 10px;
+      border-radius: 20px;
+    }
+
+    .card-arrow {
+      position: absolute;
+      bottom: 1rem;
+      right: 1rem;
+      width: 32px;
+      height: 32px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 0.8rem;
+      transition: background 0.2s;
+    }
+
+    .category-card:hover .card-arrow {
+      background: var(--accent);
+    }
+
+    /* LOADING STATE */
+    .loading-state {
+      text-align: center;
+      padding: 4rem;
+      color: var(--mid-gray);
+    }
+
+    .loading-state i {
+      font-size: 2rem;
+      animation: spin 1s linear infinite;
+      display: block;
+      margin-bottom: 1rem;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--black);
+      color: var(--mid-gray);
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.85rem;
+      margin-top: 4rem;
+    }
+
+    footer a { color: var(--accent); text-decoration: none; }
+
+    @media (max-width: 600px) {
+      .categories-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+      }
+
+      .header-nav { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      <a href="/"><span>Supa</span>mart</a>
+    </div>
+    <nav class="header-nav">
+      <a href="/">Home</a>
+      <a href="/shop.html">Shop</a>
+      <a href="/categories.html" class="active">Categories</a>
+      <a href="/login.html">Login</a>
+      <a href="/signup.html">Sign Up</a>
+    </nav>
+  </header>
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <h1>Browse Categories</h1>
+    <p>Find exactly what you're looking for</p>
+  </div>
+
+  <!-- CATEGORIES -->
+  <section class="categories-section">
+    <div class="categories-grid" id="categories-grid">
+      <div class="loading-state">
+        <i class="fas fa-spinner"></i>
+        Loading categories...
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    &copy; 2025 Supamart. All rights reserved. &nbsp;|&nbsp;
+    <a href="/">Home</a> &nbsp;|&nbsp;
+    <a href="/shop.html">Shop</a>
+  </footer>
+
+  <script>
+    const API_URL = 'https://api-supamart.onrender.com/api';
+
+    const CATEGORIES = [
+      { name: 'Electronics', icon: '💻', color: '#1a1a2e', accent: '#4361ee' },
+      { name: 'Fashion', icon: '👗', color: '#2d1b2e', accent: '#c77dff' },
+      { name: 'Home & Garden', icon: '🏡', color: '#1b2d1e', accent: '#52b788' },
+      { name: 'Sports', icon: '⚽', color: '#1a2a1a', accent: '#70e000' },
+      { name: 'Beauty', icon: '💄', color: '#2d1b1b', accent: '#ff6b6b' },
+      { name: 'Food', icon: '🍎', color: '#2d2410', accent: '#f4a261' },
+      { name: 'Books', icon: '📚', color: '#1a1a2d', accent: '#4cc9f0' },
+      { name: 'Toys', icon: '🧸', color: '#2d1a2d', accent: '#f72585' },
+      { name: 'Automotive', icon: '🚗', color: '#1a1f2d', accent: '#4895ef' },
+      { name: 'Health', icon: '💊', color: '#1b2b1b', accent: '#06d6a0' },
+      { name: 'Art & Crafts', icon: '🎨', color: '#2d1f10', accent: '#fb8500' },
+      { name: 'Other', icon: '📦', color: '#1f1f1f', accent: '#adb5bd' },
+    ];
+
+    async function loadCategories() {
+      const grid = document.getElementById('categories-grid');
+
+      try {
+        // Fetch product counts per category
+        const response = await fetch(`${API_URL}/products?limit=1000`);
+        const result = await response.json();
+
+        // Count products per category
+        const counts = {};
+        if (result.success && result.products) {
+          result.products.forEach(p => {
+            const cat = p.category || 'Other';
+            counts[cat] = (counts[cat] || 0) + 1;
+          });
+        }
+
+        grid.innerHTML = CATEGORIES.map(cat => {
+          const count = counts[cat.name] || 0;
+          return `
+            <a class="category-card" href="/shop.html?category=${encodeURIComponent(cat.name)}">
+              <div class="card-bg">${cat.icon}</div>
+              <div class="card-overlay" style="background: linear-gradient(135deg, ${cat.color}, ${cat.accent}40)"></div>
+              <div class="card-content">
+                <div class="card-icon">${cat.icon}</div>
+                <div class="card-name">${cat.name}</div>
+                <div class="card-count">${count} product${count !== 1 ? 's' : ''}</div>
+              </div>
+              <div class="card-arrow"><i class="fas fa-arrow-right"></i></div>
+            </a>
+          `;
+        }).join('');
+
+      } catch (error) {
+        console.error('Error loading categories:', error);
+        // Show categories without counts on error
+        grid.innerHTML = CATEGORIES.map(cat => `
+          <a class="category-card" href="/shop.html?category=${encodeURIComponent(cat.name)}">
+            <div class="card-bg">${cat.icon}</div>
+            <div class="card-overlay" style="background: linear-gradient(135deg, ${cat.color}, ${cat.accent}40)"></div>
+            <div class="card-content">
+              <div class="card-icon">${cat.icon}</div>
+              <div class="card-name">${cat.name}</div>
+            </div>
+            <div class="card-arrow"><i class="fas fa-arrow-right"></i></div>
+          </a>
+        `).join('');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadCategories);
+  </script>
+
+</body>
+</html>
