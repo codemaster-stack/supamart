@@ -38,6 +38,52 @@ document.addEventListener('DOMContentLoaded', function() {
 
 loadProducts();
 
+loadProducts();
+
+    function handleSearchEnter(event) {
+        if (event.key === 'Enter') performSearch();
+    }
+
+    async function performSearch() {
+        const query = document.getElementById('search-input').value.trim();
+        if (!query) {
+            loadProducts();
+            return;
+        }
+
+        try {
+            const response = await fetch(`https://api-supamart.onrender.com/api/products?search=${encodeURIComponent(query)}`);
+            const result = await response.json();
+
+            const grid = document.querySelector('.product-grid');
+            if (!grid) return;
+
+            if (!result.success || result.products.length === 0) {
+                grid.innerHTML = '<p style="text-align:center;grid-column:1/-1;">No products found.</p>';
+                return;
+            }
+
+            grid.innerHTML = result.products.map(product => `
+                <div class="product-card">
+                    <img src="${product.images[0]?.url || ''}" alt="${product.name}">
+                    <h3>${product.name}</h3>
+                    <p class="price">${product.price.currency} ${product.price.amount}</p>
+                    <a href="/product-detail.html?id=${product._id}" class="btn-small">View Details</a>
+                </div>
+            `).join('');
+
+            document.getElementById('featured-products').scrollIntoView({ behavior: 'smooth' });
+
+        } catch (error) {
+            console.error('Search error:', error);
+        }
+    }
+
+    window.handleSearchEnter = handleSearchEnter;
+    window.performSearch = performSearch;
+
+    
+
     // Shop Now button scroll
     const shopNowBtn = document.getElementById('shopNowBtn');
     if (shopNowBtn) {

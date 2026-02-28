@@ -36,8 +36,8 @@
                 </ul>
             </nav>
             <div class="header-icons">
-                <input type="text" placeholder="Search...">
-                <i class="fas fa-search"></i>
+                <input type="text" id="search-input" placeholder="Search products..." onkeypress="handleSearchEnter(event)">
+                <i class="fas fa-search" onclick="performSearch()"></i>
                 <i class="fas fa-user"></i> <!-- Can be linked to login/account page -->
                 <i class="fas fa-shopping-cart"></i>
             </div>
