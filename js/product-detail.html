@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Detail</title>
+</head>
+<body>
+  <div id="product-container">Loading...</div>
+
+  <script>
+    const API_URL = 'https://api-supamart.onrender.com/api';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('id');
+
+      if (!id) {
+        document.getElementById('product-container').innerHTML = 'Product not found.';
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_URL}/products/${id}`);
+        const result = await response.json();
+
+        if (!result.success) {
+          document.getElementById('product-container').innerHTML = 'Product not found.';
+          return;
+        }
+
+        const p = result.product;
+        document.title = p.name + ' - Supamart';
+
+        document.getElementById('product-container').innerHTML = `
+          <img src="${p.images[0]?.url || ''}" alt="${p.name}" style="width:100%;max-width:500px;">
+          <h1>${p.name}</h1>
+          <p><strong>Price:</strong> ${p.price.currency} ${p.price.amount}</p>
+          <p><strong>Description:</strong> ${p.description}</p>
+          <p><strong>Category:</strong> ${p.category}</p>
+          <p><strong>Condition:</strong> ${p.condition}</p>
+          <p><strong>Stock:</strong> ${p.stock}</p>
+          <p><strong>Seller:</strong> ${p.sellerId?.storeName || ''}</p>
+          <button onclick="window.location.href='/seller-shop.html?shop=${p.sellerId?.shopURL}'">
+            Visit Store
+          </button>
+        `;
+      } catch (error) {
+        document.getElementById('product-container').innerHTML = 'Failed to load product.';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -9,26 +9,42 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Show placeholder products
-    function displayPlaceholderProducts() {
-        const main = document.querySelector('main');
-        if (!main) return;
-        
-        const section = document.createElement('section');
-        section.className = "product-list";
+ async function loadProducts() {
+    const main = document.querySelector('main');
+    if (!main) return;
 
-        for(let i=1; i<=4; i++) {
-            const div = document.createElement('div');
-            div.className = "product";
-            div.innerHTML = `<h3>Product ${i}</h3><p>Price: ₦--</p>`;
-            section.appendChild(div);
+    try {
+        const response = await fetch('https://api-supamart.onrender.com/api/products');
+        const result = await response.json();
+
+        let section = document.querySelector('.product-list');
+        if (!section) {
+            section = document.createElement('section');
+            section.className = 'product-list';
+            main.appendChild(section);
         }
 
-        main.appendChild(section);
-    }
+        if (!result.success || result.products.length === 0) {
+            section.innerHTML = '<p style="text-align:center;">No products available yet.</p>';
+            return;
+        }
 
-    // Load placeholders
-    displayPlaceholderProducts();
+        section.innerHTML = result.products.map(product => `
+            <div class="product">
+                <img src="${product.images[0]?.url || ''}" alt="${product.name}" style="width:100%;height:200px;object-fit:cover;">
+                <h3>${product.name}</h3>
+                <p>${product.price.currency} ${product.price.amount}</p>
+                <p>${product.sellerId?.storeName || ''}</p>
+                <button onclick="window.location.href='/product-detail.html?id=${product._id}'">View Details</button>
+            </div>
+        `).join('');
+
+    } catch (error) {
+        console.error('Error loading products:', error);
+    }
+}
+
+loadProducts();
 
     // Shop Now button scroll
     const shopNowBtn = document.getElementById('shopNowBtn');
