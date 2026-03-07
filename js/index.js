@@ -82,7 +82,6 @@ loadProducts();
     window.handleSearchEnter = handleSearchEnter;
     window.performSearch = performSearch;
 
-    
 
     // Shop Now button scroll
     const shopNowBtn = document.getElementById('shopNowBtn');
@@ -94,4 +93,31 @@ loadProducts();
             }
         });
     }
-});
+
+
+    // Newsletter subscription
+    document.querySelector('.newsletter-form')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = e.target.querySelector('input[type="email"]').value;
+        const btn = e.target.querySelector('button');
+        btn.disabled = true;
+        btn.textContent = 'Subscribing...';
+
+        try {
+            const res = await fetch('https://api-supamart.onrender.com/api/newsletter/subscribe', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+            const result = await res.json();
+            alert(result.message);
+            e.target.reset();
+        } catch (err) {
+            alert('Failed to subscribe. Try again.');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Subscribe';
+        }
+    });
+
+}); 
