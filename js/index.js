@@ -38,8 +38,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 loadProducts();
 
-loadProducts();
-
     function handleSearchEnter(event) {
         if (event.key === 'Enter') performSearch();
     }

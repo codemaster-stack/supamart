@@ -36,11 +36,30 @@
                 </ul>
             </nav>
             <div class="header-icons">
-                <input type="text" id="search-input" placeholder="Search products..." onkeypress="handleSearchEnter(event)">
-                <i class="fas fa-search" onclick="performSearch()"></i>
-                <i class="fas fa-user"></i> <!-- Can be linked to login/account page -->
-                <i class="fas fa-shopping-cart"></i>
-            </div>
+    <input type="text" id="search-input" placeholder="Search products..." onkeypress="handleSearchEnter(event)">
+    <i class="fas fa-search" onclick="performSearch()"></i>
+    <a href="/login.html" style="color:inherit;text-decoration:none;">
+        <i class="fas fa-user"></i>
+    </a>
+    <a href="/cart.html" style="color:inherit;text-decoration:none;position:relative;">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-count" style="
+            position:absolute;
+            top:-8px;
+            right:-8px;
+            background:#e8491d;
+            color:white;
+            font-size:0.65rem;
+            width:18px;
+            height:18px;
+            border-radius:50%;
+            display:none;
+            align-items:center;
+            justify-content:center;
+            font-weight:700;
+        ">0</span>
+    </a>
+</div>
         </div>
     </header>
 
@@ -190,5 +209,6 @@
      <script src="../js/loadingIndicator.js"></script>
      <script src="../js/currencyConverter.js"></script>
     <script src="../js/global.js"></script>
+    <script src="../js/cart.js"></script>
 </body>
 </html>
