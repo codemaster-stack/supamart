@@ -4,9 +4,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Product Detail</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-  <div id="product-container">Loading...</div>
+
+  <!-- HEADER -->
+  <header style="background:#0a0a0a;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:64px;border-bottom:2px solid #e8491d;position:sticky;top:0;z-index:100;">
+    <a href="/" style="font-weight:800;font-size:1.3rem;color:#f8f6f1;text-decoration:none;">
+      <span style="color:#e8491d;">Supa</span>mart
+    </a>
+    <div style="display:flex;align-items:center;gap:1.5rem;">
+      <a href="/shop.html" style="color:#f8f6f1;text-decoration:none;opacity:0.7;font-size:0.9rem;">Shop</a>
+      <a href="/login.html" style="color:#f8f6f1;text-decoration:none;opacity:0.7;">
+        <i class="fas fa-user"></i>
+      </a>
+      <a href="/cart.html" style="color:#f8f6f1;text-decoration:none;position:relative;">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-count" style="position:absolute;top:-8px;right:-8px;background:#e8491d;color:white;font-size:0.65rem;width:18px;height:18px;border-radius:50%;display:none;align-items:center;justify-content:center;font-weight:700;">0</span>
+      </a>
+    </div>
+  </header>
+
+  <div id="product-container" style="max-width:900px;margin:2rem auto;padding:0 1.5rem;">Loading...</div>
 
   <script>
     const API_URL = 'https://api-supamart.onrender.com/api';
@@ -33,24 +52,41 @@
         document.title = p.name + ' - Supamart';
 
         document.getElementById('product-container').innerHTML = `
-          <img src="${p.images[0]?.url || ''}" alt="${p.name}" style="width:100%;max-width:500px;">
-          <h1>${p.name}</h1>
-          <p><strong>Price:</strong> ${p.price.currency} ${p.price.amount}</p>
+          <img src="${p.images[0]?.url || ''}" alt="${p.name}" style="width:100%;max-width:500px;border-radius:12px;">
+          <h1 style="margin:1rem 0 0.5rem;">${p.name}</h1>
+          <p style="font-size:1.3rem;font-weight:700;color:#e8491d;margin-bottom:1rem;">${p.price.currency} ${Number(p.price.amount).toLocaleString()}</p>
           <p><strong>Description:</strong> ${p.description}</p>
           <p><strong>Category:</strong> ${p.category}</p>
           <p><strong>Condition:</strong> ${p.condition}</p>
-          <p><strong>Stock:</strong> ${p.stock}</p>
+          <p><strong>Stock:</strong> ${p.stock} available</p>
           <p><strong>Seller:</strong> ${p.sellerId?.storeName || ''}</p>
-          <button onclick="window.location.href='/seller-shop.html?shop=${p.sellerId?.shopURL}'">
-            Visit Store
-          </button>
-          <button onclick="window.location.href='/'">
-          Home Page
-          </button>
+
+          <div style="display:flex;flex-wrap:wrap;gap:0.8rem;margin-top:1.5rem;">
+            <button onclick="addToCart('${p._id}', '${p.name.replace(/'/g, "\\\\'")}', ${p.price.amount}, '${p.price.currency}', '${p.images[0]?.url || ''}', '${(p.sellerId?.storeName || '').replace(/'/g, "\\\\'")}', ${p.stock})"
+              style="padding:0.8rem 1.5rem;background:#e8491d;color:white;border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;">
+              <i class="fas fa-cart-plus"></i> Add to Cart
+            </button>
+
+            <a href="/cart.html"
+              style="padding:0.8rem 1.5rem;background:#0a0a0a;color:white;border-radius:8px;font-size:1rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:0.5rem;">
+              <i class="fas fa-shopping-cart"></i> View Cart
+            </a>
+
+            <button onclick="window.location.href='/seller-shop.html?shop=${p.sellerId?.shopURL}'"
+              style="padding:0.8rem 1.5rem;background:#f8f6f1;color:#0a0a0a;border:1px solid #e0ddd6;border-radius:8px;font-size:0.9rem;cursor:pointer;">
+              Visit Store
+            </button>
+
+            <button onclick="window.location.href='/'"
+              style="padding:0.8rem 1.5rem;background:#f8f6f1;color:#0a0a0a;border:1px solid #e0ddd6;border-radius:8px;font-size:0.9rem;cursor:pointer;">
+              Home Page
+            </button>
+          </div>
+
           <a href="https://wa.me/2348063437093?text=Hi, I'm interested in this product:%0A%0AProduct: ${encodeURIComponent(p.name)}%0AStore: ${encodeURIComponent(p.sellerId?.storeName || '')}%0ALink: ${encodeURIComponent(window.location.href)}"
-          target="_blank"
-          style="display:inline-block; margin-top:10px; padding:10px 20px; background:#25D366; color:white; text-decoration:none; border-radius:5px;">
-          Contact Us on WhatsApp
+            target="_blank"
+            style="display:inline-flex;align-items:center;gap:0.5rem;margin-top:1rem;padding:0.8rem 1.5rem;background:#25D366;color:white;text-decoration:none;border-radius:8px;font-weight:700;">
+            <i class="fab fa-whatsapp"></i> Contact Us on WhatsApp
           </a>
         `;
       } catch (error) {

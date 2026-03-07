@@ -23,13 +23,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         grid.innerHTML = result.products.map(product => `
-            <div class="product-card">
-                <img src="${product.images[0]?.url || ''}" alt="${product.name}">
-                <h3>${product.name}</h3>
-                <p class="price">${product.price.currency} ${product.price.amount}</p>
-                <a href="/product-detail.html?id=${product._id}" class="btn-small">View Details</a>
-            </div>
-        `).join('');
+    <div class="product-card">
+        <img src="${product.images[0]?.url || ''}" alt="${product.name}">
+        <h3>${product.name}</h3>
+        <p class="price">${product.price.currency} ${product.price.amount}</p>
+        <a href="/product-detail.html?id=${product._id}" class="btn-small">View Details</a>
+        <button onclick="addToCart('${product._id}', '${product.name.replace(/'/g, "\\\\'")}', ${product.price.amount}, '${product.price.currency}', '${product.images[0]?.url || ''}', '${(product.sellerId?.storeName || '').replace(/'/g, "\\\\'")}', ${product.stock})"
+          style="margin-top:0.5rem;width:100%;padding:0.5rem;background:#e8491d;color:white;border:none;border-radius:6px;cursor:pointer;font-weight:600;">
+          <i class="fas fa-cart-plus"></i> Add to Cart
+        </button>
+    </div>
+`).join('');
 
     } catch (error) {
         console.error('Error loading products:', error);
