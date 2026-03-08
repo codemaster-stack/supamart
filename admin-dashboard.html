@@ -63,6 +63,12 @@
                         </a>
                     </li>
 
+                    <li class="nav-item">
+                      <a href="#manage-banners">
+                        <i class="fas fa-images"></i> Manage Banners
+                       </a>
+                    </li>
+
                     <li class="nav-item logout">
                         <a href="#admin-logout">
                             <i class="fas fa-sign-out-alt"></i> Logout
@@ -335,6 +341,46 @@
                     </div>
                 </div>
             </section>
+
+            <!-- Manage Banners Section -->
+<section id="manage-banners" class="dashboard-section">
+    <div class="container">
+        <h3>Manage Banners</h3>
+        <p style="color:#888;margin-bottom:1.5rem;">Upload hero slideshow banners for the home page.</p>
+
+        <!-- Add Banner Form -->
+        <div style="background:white;border:1px solid #e0ddd6;border-radius:12px;padding:1.5rem;margin-bottom:2rem;">
+            <h4 style="margin-bottom:1rem;font-size:1rem;">Add New Banner</h4>
+            <div style="display:grid;gap:1rem;">
+                <div>
+                    <label style="display:block;font-size:0.8rem;font-weight:600;margin-bottom:0.3rem;">Banner Image URL *</label>
+                    <input type="text" id="banner-image-url" placeholder="https://cloudinary.com/your-image.jpg"
+                        style="width:100%;padding:0.7rem 1rem;border:1px solid #e0ddd6;border-radius:8px;font-size:0.9rem;outline:none;">
+                </div>
+                <div>
+                    <label style="display:block;font-size:0.8rem;font-weight:600;margin-bottom:0.3rem;">Shop Now Button URL * <span style="font-weight:400;color:#888;">(where clicking Shop Now goes)</span></label>
+                    <input type="text" id="banner-link-url" placeholder="https://www.supamart.shop/shop.html"
+                        style="width:100%;padding:0.7rem 1rem;border:1px solid #e0ddd6;border-radius:8px;font-size:0.9rem;outline:none;">
+                </div>
+                <div>
+                    <label style="display:block;font-size:0.8rem;font-weight:600;margin-bottom:0.3rem;">Banner Title <span style="font-weight:400;color:#888;">(optional)</span></label>
+                    <input type="text" id="banner-title" placeholder="e.g. Summer Sale"
+                        style="width:100%;padding:0.7rem 1rem;border:1px solid #e0ddd6;border-radius:8px;font-size:0.9rem;outline:none;">
+                </div>
+                <button onclick="addBanner()"
+                    style="padding:0.8rem 2rem;background:#e8491d;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;width:fit-content;">
+                    <i class="fas fa-plus"></i> Add Banner
+                </button>
+            </div>
+        </div>
+
+        <!-- Current Banners -->
+        <h4 style="margin-bottom:1rem;font-size:1rem;">Current Banners</h4>
+        <div id="banners-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;">
+            <p style="color:#888;">Loading banners...</p>
+        </div>
+    </div>
+</section>
 
             <section id="admin-logout" class="dashboard-section">
                 <!-- No content needed -->

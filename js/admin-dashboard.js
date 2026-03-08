@@ -11,6 +11,77 @@ document.addEventListener('DOMContentLoaded', () => {
     loadDashboardData();
     initWidgetLinks();
 
+     // HERO CAROUSEL
+    let currentSlide = 0;
+    let slideInterval;
+    let totalSlides = 0;
+
+    async function loadBanners() {
+        try {
+            const res = await fetch('https://api-supamart.onrender.com/api/banners');
+            const data = await res.json();
+            const slidesContainer = document.getElementById('hero-slides');
+            const dotsContainer = document.getElementById('hero-dots');
+            if (!slidesContainer) return;
+
+            if (!data.success || data.banners.length === 0) {
+                slidesContainer.innerHTML = `
+                    <div class="hero-slide">
+                        <div class="hero-slide-overlay" style="background:rgba(10,10,10,0.8);">
+                            <h2>Welcome to Supamart</h2>
+                            <a href="/shop.html">Shop Now</a>
+                        </div>
+                    </div>`;
+                return;
+            }
+
+            totalSlides = data.banners.length;
+
+            slidesContainer.innerHTML = data.banners.map(banner => `
+                <div class="hero-slide">
+                    <img src="${banner.imageUrl}" alt="${banner.title || 'Banner'}">
+                    <div class="hero-slide-overlay">
+                        ${banner.title ? `<h2>${banner.title}</h2>` : ''}
+                        <a href="${banner.linkUrl}" target="_blank">Shop Now</a>
+                    </div>
+                </div>
+            `).join('');
+
+            dotsContainer.innerHTML = data.banners.map((_, i) => `
+                <button class="hero-dot ${i === 0 ? 'active' : ''}" onclick="goToSlide(${i})"></button>
+            `).join('');
+
+            clearInterval(slideInterval);
+            slideInterval = setInterval(() => changeSlide(1), 4000);
+
+        } catch (err) {
+            console.error('Error loading banners:', err);
+        }
+    }
+
+    function changeSlide(direction) {
+        if (totalSlides === 0) return;
+        currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
+        updateCarousel();
+    }
+
+    function goToSlide(index) {
+        currentSlide = index;
+        updateCarousel();
+    }
+
+    function updateCarousel() {
+        const slides = document.getElementById('hero-slides');
+        const dots = document.querySelectorAll('.hero-dot');
+        if (slides) slides.style.transform = `translateX(-${currentSlide * 100}%)`;
+        dots.forEach((dot, i) => dot.classList.toggle('active', i === currentSlide));
+    }
+
+    window.changeSlide = changeSlide;
+    window.goToSlide = goToSlide;
+
+    loadBanners();
+
 });
 
 // Check Authentication
@@ -241,20 +312,23 @@ function updateCharts(charts) {
 
 // Load Section Data
 async function loadSectionData(sectionId) {
-    switch(sectionId) {
-        case 'manage-users':
-            await loadUsers();
-            break;
-        case 'manage-sellers':
-            await loadSellers();
-            break;
-        case 'manage-products':
-            await loadProducts();
-            break;
-        case 'manage-orders':
-            await loadOrders();
-            break;
-    }
+   switch(sectionId) {
+    case 'manage-users':
+        await loadUsers();
+        break;
+    case 'manage-sellers':
+        await loadSellers();
+        break;
+    case 'manage-products':
+        await loadProducts();
+        break;
+    case 'manage-orders':
+        await loadOrders();
+        break;
+    case 'manage-banners':
+        await loadBanners();
+        break;
+}
 }
 
 // Load Users

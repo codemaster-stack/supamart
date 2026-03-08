@@ -99,15 +99,15 @@ nav ul li a {
 }
 
 /* Hero Section */
-.hero {
-    background: #e0f7fa; /* Light blue background */
+/* .hero {
+    background: #e0f7fa; 
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     padding: 60px 20px;
     text-align: center;
-    min-height: 60vh; /* Take up at least 60% of viewport height */
+    min-height: 60vh; 
 }
 
 .hero-content {
@@ -146,6 +146,135 @@ nav ul li a {
     height: auto;
     border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+} */
+
+/* HERO CAROUSEL */
+#hero-carousel {
+    position: relative;
+    width: 100%;
+    height: 500px;
+    overflow: hidden;
+    background: #0a0a0a;
+}
+
+.hero-slides {
+    display: flex;
+    height: 100%;
+    transition: transform 0.6s ease;
+}
+
+.hero-slide {
+    min-width: 100%;
+    height: 100%;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.hero-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.hero-slide-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+}
+
+.hero-slide-overlay h2 {
+    color: white;
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+.hero-slide-overlay a {
+    display: inline-block;
+    padding: 0.9rem 2.5rem;
+    background: #e8491d;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1rem;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.hero-slide-overlay a:hover {
+    background: #c73d16;
+    transform: translateY(-2px);
+}
+
+.hero-prev, .hero-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.2);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    z-index: 10;
+}
+
+.hero-prev { left: 1rem; }
+.hero-next { right: 1rem; }
+.hero-prev:hover, .hero-next:hover { background: rgba(255,255,255,0.4); }
+
+.hero-dots {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.5rem;
+    z-index: 10;
+}
+
+.hero-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.5);
+    cursor: pointer;
+    transition: background 0.2s;
+    border: none;
+}
+
+.hero-dot.active { background: white; }
+
+.btn {
+    display: inline-block;
+    background: #007bff;
+    color: #fff;
+    padding: 12px 25px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover { background: #0056b3; }
+
+@media (max-width: 768px) {
+    #hero-carousel { height: 300px; }
+    .hero-slide-overlay h2 { font-size: 1.5rem; }
 }
 
 /* Featured Products */

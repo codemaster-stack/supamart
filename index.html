@@ -63,16 +63,13 @@
         </div>
     </header>
 
-    <section class="hero">
-        <div class="hero-content">
-            <h1>Discover Our Latest Collection</h1>
-            <p>Find unique and high-quality products that you'll love.</p>
-            <a href="#featured-products" class="btn">Shop Now</a>
-        </div>
-        <div class="hero-image">
-            <!-- Replace with your actual hero image -->
-            <img src="" alt="Hero Image">
-        </div>
+    <section class="hero" id="hero-carousel">
+      <div class="hero-slides" id="hero-slides">
+        <!-- filled by JS -->
+      </div>
+      <button class="hero-prev" onclick="changeSlide(-1)">&#10094;</button>
+      <button class="hero-next" onclick="changeSlide(1)">&#10095;</button>
+      <div class="hero-dots" id="hero-dots"></div>
     </section>
 
     <section id="featured-products" class="featured-products">
@@ -201,7 +198,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                &copy; 2023 Your E-commerce Store. All rights reserved.
+                &copy; 2025 Supamart E-commerce Store. All rights reserved.
             </div>
         </div>
     </footer>
